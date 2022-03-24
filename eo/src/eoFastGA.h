@@ -27,6 +27,8 @@
  *
  * @ingroup Algorithms
  */
+int genStep = 0;
+
 template<class EOT>
 class eoFastGA : public eoAlgo<EOT>
 {
@@ -91,9 +93,17 @@ public:
             _offsprings_size = pop.size();
         }
 
-        do {
-            eoPop<EOT> offsprings;
+        std::ofstream file;
+        file.open("onlymutGAlog.csv");
+        //file << "generation parentID parentSize parent childID childSize child" << std::endl;
+        file << "generation,genBest,best" << std::endl;
 
+        genStep = 0;
+        double bestSoFar;
+        do {
+            genStep++;
+            eoPop<EOT> offsprings;
+            
             for(size_t i=0; i < _offsprings_size; ++i) {
                 // eo::log << eo::xdebug << "\tOffspring #" << i << std::endl;
 
@@ -142,21 +152,37 @@ public:
                     // eo::log << eo::xdebug << "\t\tNo crossover, do mutation" << std::endl;
                     _select_mut.setup(pop);
                     EOT sol3 = _select_mut(pop);
+                    
+                    /*
+                    file << genStep << " ";
+                    sol3.printOn(file);
+                    file << " ";
+                    */
+                    
                     if(_mutation(sol3)) {
                         sol3.invalidate();
                     }
+                    /*
+                    sol3.printOn(file);
+                    file << std::endl;
+                    */
                     offsprings.push_back(sol3);
                 }
             }
             assert(offsprings.size() == _offsprings_size);
 
             _pop_eval(pop, offsprings);
+            if (genStep == 1) bestSoFar = pop.best_element().fitness();
+            if (bestSoFar < offsprings.best_element().fitness()) bestSoFar = offsprings.best_element().fitness();
+            file << genStep << "," << offsprings.best_element().fitness() << "," << bestSoFar << std::endl;
+            
             _replace(pop, offsprings);
 
             // eo::log << eo::xdebug << "\tEnd of generation" << std::endl;
 
         } while(_continuator(pop));
 #ifndef NDEBUG
+        file.close()
         assert(pop.size() > 0);
         for(auto sol : pop) {
             assert(not sol.invalid());

@@ -127,14 +127,11 @@ template <class EOT> class eoPlus : public eoMerge<EOT>
         void operator()(const eoPop<EOT>& _pop, eoPop<EOT>& _offspring)
         {
             _offspring.reserve(_offspring.size() + _pop.size());
-
             for (size_t i = 0; i < _pop.size(); ++i)
             {
                 _offspring.push_back(_pop[i]);
             }
         }
-
-    private :
 };
 
 //-----------------------------------------------------------------------------

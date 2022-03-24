@@ -98,7 +98,15 @@ public:
       os << size() << ' ';
       std::copy(begin(), end(), std::ostream_iterator<ScalarType>(os));
     }
-
+    
+    /**
+     * To print me on a log file.
+     * @param os The std::ostream.
+     */
+    virtual void printINlog(std::ostream& os) const
+      {
+        std::copy(begin(), end(), std::ostream_iterator<ScalarType>(os));
+      }
   /**
    * To read me from a stream.
    * @param is The std::istream.

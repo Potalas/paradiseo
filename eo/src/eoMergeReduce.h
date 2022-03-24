@@ -76,7 +76,11 @@ class eoPlusReplacement : public eoMergeReduce<EOT>
 {
     public :
         eoPlusReplacement() : eoMergeReduce<EOT>(plus, truncate) {}
-
+    
+        virtual void operator()(eoPop<EOT>& _parents, eoPop<EOT>& _offspring)
+        {
+            eoMergeReduce<EOT>::operator()( _parents, _offspring );
+        }
     private :
         eoPlus<EOT> plus;
         eoTruncate<EOT> truncate;
